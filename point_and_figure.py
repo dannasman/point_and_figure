@@ -49,6 +49,10 @@ class PointAndFigure:
         close_prices = df['Close']
         dates = df['Date']
 
+        # Getting the index of the last row
+        last_close_index = df.index[-1]
+        last_close = df['Close'].index[-1]
+
         current = self.floor_to_nearest(close_prices[0])
         min_price = self.floor_to_nearest(min(close_prices))
         max_price = self.floor_to_nearest(max(close_prices))
@@ -65,7 +69,6 @@ class PointAndFigure:
         startRow = row
         b = current
         
-
         th = 3 #threshold for changing trend direction
         monthIndex = self.get_month_index(dates[0]) #get starting month
         grid[row][col] = self.months[monthIndex] #set the mark of starting position to starting month
@@ -73,10 +76,15 @@ class PointAndFigure:
 
         #calculate chart for rest of the prices
         dateIndex = 1
+        record_count = 0  # used to count to the last_close_index
+        latest_close = False
         newMonth = False
         for close_price in close_prices[1:]:
             oldMonthIndex = monthIndex
             monthIndex = self.get_month_index(dates[dateIndex])
+
+            if record_count == last_close_index - 1:
+              latest_close = True
 
             if oldMonthIndex != monthIndex:
                     newMonth = True
@@ -156,13 +164,28 @@ class PointAndFigure:
                     row -= round((price_rounded-current)/self.step)
                     current = price_rounded
                     trend = -1
+                    
+            # Mark the latest closing price on the grid
+            if latest_close:
+              grid[row][col] = '$$'
+
+            record_count += 1
             dateIndex += 1
 
-        #print the chart
+        # Change the Colors of the X's and O's and print the chart
         chart = ""
         for i in range(height):
-            chart += "{:>4.1f} ".format((startRow-i)*self.step+b)
+            chart += "{:>4.2f} ".format((startRow - i) * self.step + b)
             for j in range(width):
-                chart += grid[i][j]
+                if grid[i][j] == 'O':
+                    chart += "\033[31mO\033[0m"  # Red 'O'
+                elif grid[i][j] == 'X':
+                    chart += "\033[32mX\033[0m"  # Green 'X'
+                else:
+                    chart += grid[i][j]
+
+                # Add space between columns (adjust the number of spaces as needed)
+                chart += " " * 1  # Adding 1 space between columns
+
             chart += "\n"
         return chart

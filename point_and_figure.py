@@ -161,7 +161,7 @@ class PointAndFigure:
         #print the chart
         chart = ""
         for i in range(height):
-            chart += "{:>4.1f} ".format((startRow-i)*self.step+b)
+            chart += "{:>5.1f} ".format((startRow-i)*self.step+b)
             for j in range(width):
                 chart += grid[i][j]
             chart += "\n"

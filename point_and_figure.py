@@ -49,6 +49,10 @@ class PointAndFigure:
         close_prices = df['Close']
         dates = df['Date']
 
+        # Getting the index of the last row
+        last_close_index = df.index[-1]
+        last_close = df['Close'].index[-1]
+
         current = self.floor_to_nearest(close_prices[0])
         min_price = self.floor_to_nearest(min(close_prices))
         max_price = self.floor_to_nearest(max(close_prices))
@@ -78,6 +82,9 @@ class PointAndFigure:
         for close_price in close_prices[1:]:
             oldMonthIndex = monthIndex
             monthIndex = self.get_month_index(dates[dateIndex])
+
+            if record_count == last_close_index - 1:
+              latest_close = True
 
             if oldMonthIndex != monthIndex:
                     newMonth = True

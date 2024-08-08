@@ -175,7 +175,7 @@ class PointAndFigure:
         # Change the Colors of the X's and O's and print the chart
         chart = ""
         for i in range(height):
-            chart += "{:>4.2f} ".format((startRow - i) * self.step + b)
+            chart += "{:>6.2f} ".format((startRow - i) * self.step + b)
             for j in range(width):
                 if grid[i][j] == 'O':
                     chart += "\033[31mO\033[0m"  # Red 'O'
